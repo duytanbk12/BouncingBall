@@ -66,9 +66,6 @@ public class MoveBox{
         return paint;
     }
 
-    public void setPaint(Paint paint) {
-        this.paint = paint;
-    }
 
     public float getX() {
         return x;
