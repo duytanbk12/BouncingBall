@@ -15,7 +15,7 @@ public class Ball {
     private float radius;
     private float velocityX;
     private float velocityY;
-    private float speed;
+    private float speedBall;
     private double alpha;
     private Paint paint;
     private Bitmap bitmap;
@@ -24,17 +24,17 @@ public class Ball {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        speed = 15;
+        speedBall = 15;
         alpha = Math.PI / 4.0;
-        velocityX = (float) (speed * Math.sin(alpha));
-        velocityY = (float) (speed * Math.cos(alpha));
+        velocityX = (float) (speedBall * Math.sin(alpha));
+        velocityY = (float) (speedBall * Math.cos(alpha));
         paint = new Paint();
         bitmap = BitmapFactory.decodeResource(MainActivity.resources, R.drawable.ball);
         bitmap = Bitmap.createScaledBitmap(bitmap, (int) (radius * 4), (int) (radius * 4), false);
 
         }
 
-    public void move() {
+    public void moveBall() {
         x = x + velocityX;
         y = y + velocityY;
     }
@@ -54,7 +54,7 @@ public class Ball {
         return false;
     }
 
-    public boolean checkCollisionBackgroundB(View view) {
+    public boolean checkCollisionBackgroundBelow(View view) {
 
          if (y + radius + velocityY > view.getHeight() ) {
             return true;
@@ -65,17 +65,17 @@ public class Ball {
     public boolean checkCollision(Box box) {
         boolean check = false;
 
-        PointF p1 = new PointF(x + velocityX, y + radius + velocityY);
-        PointF p2 = new PointF(x + velocityX, y - radius + velocityY);
-        if (box.inArea(p1) || box.inArea(p2)) {
-            move();
+        PointF locationBall1 = new PointF(x + velocityX, y + radius + velocityY);
+        PointF locationBall2 = new PointF(x + velocityX, y - radius + velocityY);
+        if (box.inArea(locationBall1) || box.inArea(locationBall2)) {
+            moveBall();
             updateAlpha(Math.PI - alpha);
             check = true;
         }
-        p1 = new PointF(x + radius + velocityX, y + velocityY);
-        p2 = new PointF(x - radius + velocityX, y + velocityY);
-        if (box.inArea(p1) || box.inArea(p2)) {
-            move();
+        locationBall1 = new PointF(x + radius + velocityX, y + velocityY);
+        locationBall2 = new PointF(x - radius + velocityX, y + velocityY);
+        if (box.inArea(locationBall1) || box.inArea(locationBall2)) {
+            moveBall();
             updateAlpha(-alpha);
             check = true;
         }
@@ -89,7 +89,7 @@ public class Ball {
         PointF p1 = new PointF(x + velocityX, y + radius + velocityY);
         PointF p2 = new PointF(x + velocityX, y - radius + velocityY);
         if (moveBox.inArea(p1) || moveBox.inArea(p2)) {
-            move();
+            moveBall();
             double deltaX = (x - (moveBox.getX() + moveBox.getWidth() / 2));
             double sinAlpha = (deltaX * 1.9) / moveBox.getWidth();
             double changeAlpha = Math.asin(sinAlpha) + Math.PI / 18;
@@ -104,8 +104,8 @@ public class Ball {
 
     private void updateAlpha(double changeAlpha) {
         alpha = changeAlpha;
-        velocityX = (float) (speed * Math.sin(alpha));
-        velocityY = (float) (speed * Math.cos(alpha));
+        velocityX = (float) (speedBall * Math.sin(alpha));
+        velocityY = (float) (speedBall * Math.cos(alpha));
     }
 
     public float getX() {
@@ -127,7 +127,5 @@ public class Ball {
     public float getVelocityX() {
         return velocityX;
     }
-
-
 
 }

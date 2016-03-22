@@ -20,7 +20,7 @@ public class Brick extends Box {
     }
 
     @Override
-    public void drawb(Canvas canvas) {;
+    public void drawb(Canvas canvas) {
         canvas.drawBitmap(bitmap, getX(), getY(), paint);
     }
 }

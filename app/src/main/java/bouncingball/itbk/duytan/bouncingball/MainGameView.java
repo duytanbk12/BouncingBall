@@ -22,9 +22,8 @@ public class MainGameView extends SurfaceView {
     MoveBox moveBox;
     public static   ArrayList<Brick> brickList;
     ArrayList<Ball> ballList;
-    ArrayList<Brick> collisionBrick;
-    ArrayList<Ball> collisionBall;
-    SoundManager soundManager;
+    ArrayList<Brick> collisionBrickList;
+    ArrayList<Ball> collisionBallList;
 
     public MainGameView(Context context) {
         super(context);
@@ -44,8 +43,8 @@ public class MainGameView extends SurfaceView {
                 Brick b = new Brick(t, j*90/2-10, 1000 / 10, 100);
                 brickList.add(b);
             }
-        collisionBrick = new ArrayList<>();
-        collisionBall = new ArrayList<>();
+        collisionBrickList = new ArrayList<>();
+        collisionBallList = new ArrayList<>();
 
         gameThread = new GameThread(this);
         holder = this.getHolder();
@@ -81,11 +80,11 @@ public class MainGameView extends SurfaceView {
         bitmap = Bitmap.createScaledBitmap(bitmap,getWidth(),getHeight(), false);
         canvas.drawBitmap(bitmap, 0, 0, paint);
 
-        brickList.removeAll(collisionBrick);
-        collisionBrick.clear();
+        brickList.removeAll(collisionBrickList);
+        collisionBrickList.clear();
 
-        ballList.removeAll(collisionBall);
-        collisionBall.clear();
+        ballList.removeAll(collisionBallList);
+        collisionBallList.clear();
 
         moveBox.draw(canvas);
 
@@ -93,8 +92,8 @@ public class MainGameView extends SurfaceView {
         for (int i=0;i<t;i++) {
             Ball ball = ballList.get(i);
             if (ball.checkCollisionBackground(this)) MainActivity.soundManager.playHit();
-            if (ball.checkCollisionBackgroundB(this)) {
-                collisionBall.add(ball);
+            if (ball.checkCollisionBackgroundBelow(this)) {
+                collisionBallList.add(ball);
                 t--;
             }
 
@@ -104,7 +103,7 @@ public class MainGameView extends SurfaceView {
                     ball.setX(ball.getX() + moveBox.getDeltaX());
                 }
             }
-            ball.move();
+            ball.moveBall();
             ball.drawBitmap(canvas);
 
             for (int a = 0; a<t;a++){
@@ -112,7 +111,7 @@ public class MainGameView extends SurfaceView {
 
                 if ( a!=i){
                     if ((Math.pow(bal.getX() - ball.getX(),2)+(Math.pow(bal.getY()-ball.getY(),2)) <=900)){
-                        collisionBall.add(bal);
+                        collisionBallList.add(bal);
                         MainActivity.soundManager.playHitl();
                         t--;
                     }
@@ -123,7 +122,7 @@ public class MainGameView extends SurfaceView {
                 Brick b = brickList.get(j);
                 b.drawb(canvas);
                 if (ball.checkCollision(b)) {
-                    collisionBrick.add(b);
+                    collisionBrickList.add(b);
                     MainActivity.soundManager.playHit();
                     Random ran = new Random();
                     int r = ran.nextInt(3);

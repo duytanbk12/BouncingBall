@@ -1,6 +1,5 @@
 package bouncingball.itbk.duytan.bouncingball;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,7 +12,6 @@ public abstract class Box {
     private float width;
     private float height;
     private Paint paint;
-    private Bitmap bitmap;
 
     public Box() {
         this.x = 0;
@@ -23,21 +21,6 @@ public abstract class Box {
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setColor(Color.RED);
-    }
-
-    public Box(float x, float y, float width, float height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        paint = new Paint();
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(Color.RED);
-    }
-
-    public void draw(Canvas canvas) {
-        canvas.drawRect(x, y, x + width, y + height, paint);
-
     }
 
     public boolean inArea(PointF p) {
@@ -81,14 +64,6 @@ public abstract class Box {
 
     public void setWidth(float width) {
         this.width = width;
-    }
-
-    public Paint getPaint() {
-        return paint;
-    }
-
-    public void setPaint(Paint paint) {
-        this.paint = paint;
     }
 
     abstract void drawb(Canvas canvas);

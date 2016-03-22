@@ -3,7 +3,6 @@ package bouncingball.itbk.duytan.bouncingball;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.view.Display;
@@ -26,9 +25,6 @@ public class MoveBox{
         this.y = y;
         this.width = width;
         this.height = height;
-        paint = new Paint();
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(Color.RED);
         previousX = x;
         bitmap = BitmapFactory.decodeResource(MainActivity.resources, R.drawable.bat);
         bitmap = Bitmap.createScaledBitmap(bitmap, (int)getWidth(), (int)getHeight(), true);
@@ -51,8 +47,8 @@ public class MoveBox{
 
     }
 
-    public boolean inArea(PointF p) {
-        if (p.x >= x && p.x <= x + getWidth() && p.y >= y && p.y <= y + getHeight()) {
+    public boolean inArea(PointF locationBall  ) {
+        if (locationBall.x >= x && locationBall.x <= x + getWidth() && locationBall.y >= y && locationBall.y <= y + getHeight()) {
             return true;
         }
         return false;
