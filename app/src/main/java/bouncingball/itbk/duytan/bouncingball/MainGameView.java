@@ -137,7 +137,7 @@ public class MainGameView extends SurfaceView {
             }
         }
     }
-
+//aa
     @Override
     public boolean onTouchEvent (MotionEvent event){
         moveBox.onTouchEvent(event);
