@@ -18,33 +18,21 @@ public class MainGameView extends SurfaceView {
     private SurfaceHolder holder;
     private GameThread gameThread;
     private  Bitmap bitmap;
+    Ball ball;
+    int sizeBall;
     Display display = MainActivity.display;
     MoveBox moveBox;
-    public static   ArrayList<Brick> brickList;
+    ArrayList<Brick> brickList;
     ArrayList<Ball> ballList;
     ArrayList<Brick> collisionBrickList;
     ArrayList<Ball> collisionBallList;
 
     public MainGameView(Context context) {
         super(context);
-        ballList = new ArrayList<>();
-        Ball ball = new Ball(500, 500, 15);
-        ballList.add(ball);
 
-        moveBox = new MoveBox(display.getWidth() / 2, display.getHeight() - 100, 100, 20);;
-
-        brickList = new ArrayList<>();
-        bitmap = BitmapFactory.decodeResource(MainActivity.resources, R.drawable.background);
-        for (int j = 0; j<5 ; j++)
-            for (int i = 0; i < 9; i++) {
-                int t;
-                t=100*i;
-                if (j%2==1) t-=50;
-                Brick b = new Brick(t, j*90/2-10, 1000 / 10, 100);
-                brickList.add(b);
-            }
-        collisionBrickList = new ArrayList<>();
-        collisionBallList = new ArrayList<>();
+        createBackground_moveBox();
+        createBall();
+        createBick();
 
         gameThread = new GameThread(this);
         holder = this.getHolder();
@@ -88,56 +76,95 @@ public class MainGameView extends SurfaceView {
 
         moveBox.draw(canvas);
 
-        int t=ballList.size();
-        for (int i=0;i<t;i++) {
-            Ball ball = ballList.get(i);
-            if (ball.checkCollisionBackground(this)) MainActivity.soundManager.playHit();
-            if (ball.checkCollisionBackgroundBelow(this)) {
-                collisionBallList.add(ball);
-                t--;
-            }
+        sizeBall=ballList.size();
+        for (int i=0;i<sizeBall;i++) {
+            ball = ballList.get(i);
 
-            if (ball.checkCollision(moveBox, false)) {
-                MainActivity.soundManager.playHit();
-                if (Math.abs(moveBox.getDeltaX()) > Math.abs(ball.getVelocityX())) {
-                    ball.setX(ball.getX() + moveBox.getDeltaX());
-                }
-            }
+            checkBallCollisionBackground();
+            checkBallCollisionMovebox();
             ball.moveBall();
             ball.drawBitmap(canvas);
+            checkBallCollisionBall(i);
+            checkBallCollisionBrick(canvas);
 
-            for (int a = 0; a<t;a++){
-                Ball bal= ballList.get(a);
+        }
+    }
 
-                if ( a!=i){
-                    if ((Math.pow(bal.getX() - ball.getX(),2)+(Math.pow(bal.getY()-ball.getY(),2)) <=900)){
-                        collisionBallList.add(bal);
-                        MainActivity.soundManager.playHitl();
-                        t--;
-                    }
-                }
+    public void createBick() {
+        brickList = new ArrayList<>();
+        collisionBrickList = new ArrayList<>();
+        for (int i = 0; i<5 ; i++)
+            for (int j = 0; j < 9; j++) {
+                int temp;
+                temp=100*j;
+                if (i%2==1) temp-=50;
+                Brick brick = new Brick(temp, i*90/2-10, 1000 / 10, 100);
+                brickList.add(brick);
             }
+    }
+    public void createBall() {
+        ballList = new ArrayList<>();
+        collisionBallList = new ArrayList<>();
+        Ball ball = new Ball(display.getWidth()/2, display.getHeight()/2, 15);
+        ballList.add(ball);
 
-            for (int j = 0; j < brickList.size(); j++) {
-                Brick b = brickList.get(j);
-                b.drawb(canvas);
-                if (ball.checkCollision(b)) {
-                    collisionBrickList.add(b);
-                    MainActivity.soundManager.playHit();
-                    Random ran = new Random();
-                    int r = ran.nextInt(3);
-                    if ((r == 2)&& (ballList.size()<4)) {
-                        int h=ran.nextInt(200)+400;
-                        int w=ran.nextInt(display.getWidth());
-                        Ball ball1 = new Ball(h, w, 15);
-                        ballList.add(ball1);
-                        t++;
-                    }
+
+    }
+    public void  createBackground_moveBox(){
+        bitmap = BitmapFactory.decodeResource(MainActivity.resources, R.drawable.background);
+        moveBox = new MoveBox(display.getWidth() / 2, display.getHeight() - 100, 100, 20);
+
+    }
+    public void checkBallCollisionBackground(){
+        if (ball.checkCollisionBackground(this)) MainActivity.soundManager.playHit();
+        if (ball.checkCollisionBackgroundBelow(this)) {
+            collisionBallList.add(ball);
+            sizeBall--;
+        }
+    }
+    public void checkBallCollisionMovebox(){
+        if (ball.checkCollision(moveBox, false)) {
+            MainActivity.soundManager.playHit();
+            if (Math.abs(moveBox.getDeltaX()) > Math.abs(ball.getVelocityX())) {
+                ball.setX(ball.getX() + moveBox.getDeltaX());
+            }
+        }
+
+    }
+    public void checkBallCollisionBall(int ballcheck) {
+        for (int i = 0; i<sizeBall;i++){
+            Ball bal= ballList.get(i);
+
+            if ( i!=ballcheck){
+                if ((Math.pow(bal.getX() - ball.getX(),2)+(Math.pow(bal.getY()-ball.getY(),2)) <=900)){
+                    collisionBallList.add(bal);
+                    MainActivity.soundManager.playHitl();
+                    sizeBall--;
                 }
             }
         }
+
     }
-//aa
+    public void checkBallCollisionBrick(Canvas canvas) {
+        for (int i = 0; i < brickList.size(); i++) {
+            Brick brickCheck = brickList.get(i);
+            brickCheck.drawb(canvas);
+            if (ball.checkCollision(brickCheck)) {
+                collisionBrickList.add(brickCheck);
+                MainActivity.soundManager.playHit();
+                Random ran = new Random();
+                int r = ran.nextInt(3);
+                if ((r == 2)&& (ballList.size()<4)) {
+                    int h=ran.nextInt(200)+400;
+                    int w=ran.nextInt(display.getWidth());
+                    Ball ball1 = new Ball(h, w, 15);
+                    ballList.add(ball1);
+                    sizeBall++;
+                }
+            }
+        }
+
+    }
     @Override
     public boolean onTouchEvent (MotionEvent event){
         moveBox.onTouchEvent(event);

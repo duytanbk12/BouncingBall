@@ -23,8 +23,8 @@ public abstract class Box {
         paint.setColor(Color.RED);
     }
 
-    public boolean inArea(PointF p) {
-        if (p.x >= x && p.x <= x + width && p.y >= y && p.y <= y + height) {
+    public boolean inArea(PointF locationBall) {
+        if (locationBall.x >= x && locationBall.x <= x + width && locationBall.y >= y && locationBall.y <= y + height) {
             return true;
         }
         return false;
